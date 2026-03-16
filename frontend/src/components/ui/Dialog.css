@@ -1,0 +1,133 @@
+/* --- OVERLAY BACKDROP --- */
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px); /* The Glass Blur Effect */
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* --- MODAL BOX --- */
+.dialog-content {
+  background: white;
+  width: 90%;
+  max-width: 400px;
+  border-radius: 24px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  z-index: 1060;
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+/* --- HEADER --- */
+.dialog-header {
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #f1f5f9;
+  background: #f8fafc;
+}
+
+.dialog-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.dialog-close-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  color: #94a3b8;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.dialog-close-btn:hover {
+  background: #e2e8f0;
+  color: #ef4444;
+}
+
+/* --- BODY --- */
+.dialog-body {
+  padding: 24px;
+  text-align: center;
+}
+
+/* --- ANIMATIONS --- */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* --- BUTTONS & ICONS (For Logout) --- */
+.logout-icon-wrapper {
+  width: 70px;
+  height: 70px;
+  background: #fef2f2; /* Light Red */
+  color: #ef4444;       /* Red */
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  margin: 0 auto 16px auto;
+}
+
+.dialog-text {
+  color: #64748b;
+  font-size: 0.9rem;
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.dialog-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-dialog-cancel {
+  flex: 1;
+  padding: 10px;
+  border-radius: 50px;
+  border: 1px solid #e2e8f0;
+  background: white;
+  color: #64748b;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+.btn-dialog-cancel:hover { background: #f8fafc; color: #0f172a; }
+
+.btn-dialog-danger {
+  flex: 1;
+  padding: 10px;
+  border-radius: 50px;
+  border: none;
+  background: #ef4444;
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+  transition: all 0.2s;
+}
+.btn-dialog-danger:hover { background: #dc2626; transform: translateY(-2px); }

@@ -1,0 +1,105 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand: var(--brand);          /* The Deep Navy */
+  --color-primary: var(--primary);      /* The Action Blue */
+  
+  --color-background: var(--background);
+  --color-surface: var(--surface);      /* Cards */
+  --color-surface-hover: var(--surface-hover);
+  
+  --color-text-main: var(--text-main);
+  --color-text-muted: var(--text-muted);
+  --color-border: var(--border);
+
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-error: var(--error);
+  --color-primary-light: var(--primary-light);
+  --color-success-light: var(--success-light);
+  --color-error-light: var(--error-light);
+  --color-gold: var(--gold);
+  
+  /* Overlay for Modals */
+  --color-overlay: var(--overlay);
+
+  /* 2. Register Fonts */
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-display: "Poppins", system-ui, sans-serif;
+}
+
+/* 3. LIGHT MODE (Your Teammate's Palette) */
+:root {
+  /* Brand Identity */
+  --brand: #1F2A44;         /* Deep Indigo - Headers/Nav */
+  --primary: #2F80ED;       /* Service Blue - Buttons/Links */
+
+  /* Layout */
+  --background: #F9FAFC;    /* Warm White */
+  --surface: #FFFFFF;       /* Pure White Cards */
+  --surface-hover: #F3F4F6; /* Light Grey Hover */
+  --border: #E5E7EB;        /* Light Grey Dividers */
+
+  /* Typography */
+  --text-main: #111827;     /* Dark Charcoal */
+  --text-muted: #6B7280;    /* Muted Grey */
+
+  /* Utility / Status */
+  --success: #27AE60;
+  --warning: #F2994A;
+  --error: #EB5757;
+
+  /* 1. SOFT TINTS (Calculated to match your palette) */
+  --primary-light: #EBF3FD;   /* Very faint blue (Matches #2F80ED) */
+  --success-light: #E9F7EF;   /* Very faint green (Matches #27AE60) */
+  --error-light: #FDEFEF;     /* Very faint red (Matches #EB5757) */
+
+  /* 2. PREMIUM GOLD */
+  --gold: #D97706;            /* Professional Deep Gold/Amber */
+
+  /* 3. OVERLAY */
+  --overlay: rgba(31, 42, 68, 0.5); /* Navy Blue with 50% opacity */
+}
+
+/* 4. DARK MODE (Auto-generated to match) */
+.dark {
+  /* Brand Identity */
+  --brand: #314269;         /* Lighter Navy for visibility */
+  --primary: #3B82F6;       /* Lighter Blue for contrast against dark */
+
+  /* Layout - shifting to deep dark blues instead of pure black */
+  --background: #0B1120;    /* Very Dark Navy (Almost Black) */
+  --surface: #1F2A44;       /* We use the Brand Color as the Card BG now! */
+  --surface-hover: #2D3B5E; /* Slightly lighter card hover */
+  --border: #374151;        /* Dark Grey Dividers */
+
+  /* Typography */
+  --text-main: #F9FAFC;     /* Warm White */
+  --text-muted: #9CA3AF;    /* Lighter Grey */
+
+  /* Utility - softened for dark mode eyes */
+  --success: #34D399;       /* Brighter Green */
+  --warning: #FBBF24;       /* Brighter Orange */
+  --error: #F87171;         /* Softer Red */
+
+  --primary-light: rgba(47, 128, 237, 0.15); /* Low opacity Blue */
+  --success-light: rgba(39, 174, 96, 0.15);  /* Low opacity Green */
+  --error-light: rgba(235, 87, 87, 0.15);    /* Low opacity Red */
+
+  --gold: #F59E0B; /* Brighter gold for dark mode */
+  
+  --overlay: rgba(0, 0, 0, 0.7); /* Darker blackout for dark mode */
+}
+
+/* Global Reset to apply fonts */
+body {
+  font-family: var(--font-sans);
+  font-feature-settings: "cv11", "ss01";
+  -webkit-font-smoothing: antialiased;
+  background-color: var(--background);
+  color: var(--text-main);
+}
+
+h1, h2, h3, h4, h5, h6, button {
+  font-family: var(--font-display);
+}

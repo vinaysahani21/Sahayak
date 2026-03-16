@@ -1,0 +1,52 @@
+/* Profile Banner Gradient */
+.profile-banner {
+  background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 100%);
+  height: 150px;
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+  position: relative;
+}
+
+/* Profile Image (Overlapping the banner) */
+.profile-avatar-container {
+  width: 110px;
+  height: 110px;
+  margin: -60px auto 15px auto; /* Negative top margin pulls it up */
+  position: relative;
+  z-index: 2;
+}
+
+.profile-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: 4px solid #fff;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  background: #fff;
+}
+
+/* Menu Item Hover */
+.profile-menu-item {
+  transition: all 0.2s ease;
+  color: #495057;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid #f8f9fa;
+}
+
+.profile-menu-item:last-child {
+  border-bottom: none;
+}
+
+.profile-menu-item:hover {
+  background-color: #f8f9fa;
+  color: #0d6efd;
+  padding-left: 20px; /* Slide effect */
+}
+
+.profile-menu-item i {
+  width: 30px;
+  font-size: 1.1rem;
+}
