@@ -39,7 +39,7 @@ const UserLayout = () => {
   // Pages that need FULL WIDTH (No 120px margin)
   // Usually the Home page looks better full width with its own container, 
   // but if you want 120px everywhere, remove this check.
-  const isFullWidthPage = path === '/user/search';
+  const isFullWidthPage = path === '/user/search' || path.startsWith('/user/provider/') || path.startsWith('/user/book-service')  ;
 
   return (
     <div className="min-h-screen bg-gray-50 pb-24 font-sans">

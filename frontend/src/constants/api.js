@@ -1,5 +1,5 @@
 // Change this ONE line to switch between Localhost and Live Server
-export const API_BASE_URL = "http://localhost/Sahayak-BE/";
+export const API_BASE_URL = "http://localhost/php/sh/";
 
 export const API_ENDPOINTS = {
   LOGIN: `${API_BASE_URL}/login.php`,
