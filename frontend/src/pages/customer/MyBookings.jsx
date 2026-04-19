@@ -339,7 +339,7 @@ const MyBookings = () => {
                                         onClick={(e) => handleCancel(e, item.booking_id)}
                                         title="Cancel Booking"
                                     >
-                                        <i className="fa-solid fa-trash-can"></i>
+                                        <i className="fa-solid fa-cancel"></i>
                                     </button>
                                 )}
                                 {item.status === 'completed' && (

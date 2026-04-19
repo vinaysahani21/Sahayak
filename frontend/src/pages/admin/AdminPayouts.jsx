@@ -28,7 +28,7 @@ const AdminPayouts = () => {
 
     // --- PROCESS PAYOUT ---
     const handleProcess = async (id) => {
-        if (!window.confirm("Mark this payout as Completed? Ensure you have actually transferred the funds to the provider's bank account.")) return;
+        if (!window.confirm("Mark this payout as Completed? Ensure you have successfully wired the funds to the provider's bank account before confirming.")) return;
 
         try {
             const res = await fetch(`${API_BASE_URL}/admin/process_withdrawal.php`, {
@@ -39,13 +39,13 @@ const AdminPayouts = () => {
             const result = await res.json();
 
             if (result.status === 'success') {
-                // Update local UI
+                // Optimistic local UI update
                 setWithdrawals(withdrawals.map(w => w.id === id ? { ...w, status: 'completed' } : w));
             } else {
                 alert(result.message || "Failed to process payout.");
             }
         } catch (error) {
-            alert("Server error processing request.");
+            alert("Server error processing request. Please try again.");
         }
     };
 
@@ -59,141 +59,169 @@ const AdminPayouts = () => {
     const totalPaid = withdrawals.filter(w => w.status === 'completed').reduce((sum, w) => sum + parseFloat(w.amount), 0);
 
     return (
-        <div className="p-6 max-w-7xl mx-auto space-y-6 pb-20">
+        <div className="p-6 md:p-8 max-w-7xl mx-auto space-y-8 pb-24 font-sans selection:bg-brand/20 selection:text-brand">
             
-            {/* Header & Controls */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+            {/* --- HEADER & CONTROLS --- */}
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div>
-                    <h1 className="text-2xl font-bold text-slate-900">Payouts & Finance</h1>
-                    <p className="text-sm font-medium text-slate-500">Manage provider withdrawal requests and settlements.</p>
+                    <h1 className="text-3xl font-black text-slate-900 tracking-tight">Payouts & Finance</h1>
+                    <p className="text-sm font-medium text-slate-500 mt-1">Manage provider withdrawal requests and settle platform balances.</p>
                 </div>
                 
-                {/* Filter */}
-                <div className="bg-slate-100 p-1 rounded-xl flex gap-1 w-full sm:w-auto">
+                {/* Status Filter Toggle */}
+                <div className="bg-slate-100/80 p-1.5 rounded-2xl flex w-full md:w-auto border border-slate-200/60 shadow-inner backdrop-blur-sm">
                     <button 
                         onClick={() => setStatusFilter('pending')}
-                        className={`flex-1 sm:px-6 py-2 text-sm font-bold rounded-lg transition-all ${statusFilter === 'pending' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                        className={`flex-1 md:px-8 py-2.5 text-sm font-bold rounded-xl transition-all duration-300 ${
+                            statusFilter === 'pending' 
+                            ? 'bg-white text-amber-600 shadow-sm border border-slate-200/50' 
+                            : 'text-slate-500 hover:text-slate-800'
+                        }`}
                     >
-                        Pending Needs Action
+                        Needs Action ({withdrawals.filter(w => w.status === 'pending').length})
                     </button>
                     <button 
                         onClick={() => setStatusFilter('all')}
-                        className={`flex-1 sm:px-6 py-2 text-sm font-bold rounded-lg transition-all ${statusFilter === 'all' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                        className={`flex-1 md:px-8 py-2.5 text-sm font-bold rounded-xl transition-all duration-300 ${
+                            statusFilter === 'all' 
+                            ? 'bg-white text-slate-900 shadow-sm border border-slate-200/50' 
+                            : 'text-slate-500 hover:text-slate-800'
+                        }`}
                     >
-                        All History
+                        Ledger History
                     </button>
                 </div>
             </div>
 
-            {/* Quick Stats */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="bg-blue-50 border border-blue-100 rounded-2xl p-5 flex items-center justify-between">
-                    <div>
-                        <p className="text-[10px] font-bold text-blue-500 uppercase tracking-wider mb-1">Total Pending Payouts</p>
-                        <h4 className="text-2xl font-bold text-blue-900">₹{totalPending.toLocaleString()}</h4>
+            {/* --- QUICK STATS --- */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 animate-fade-in-up">
+                
+                {/* Pending Payouts Card */}
+                <div className="bg-amber-50 rounded-[2rem] p-6 md:p-8 border border-amber-200/60 flex items-center justify-between shadow-sm relative overflow-hidden group">
+                    <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-amber-500/10 rounded-full blur-3xl pointer-events-none group-hover:bg-amber-500/20 transition-colors duration-700"></div>
+                    <div className="relative z-10">
+                        <p className="text-[10px] font-black text-amber-700/70 uppercase tracking-widest mb-2 flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span> Total Pending Transfer
+                        </p>
+                        <h4 className="text-4xl font-black text-amber-600 tracking-tighter">₹{totalPending.toLocaleString()}</h4>
                     </div>
-                    <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-blue-500 text-xl shadow-sm">
+                    <div className="relative z-10 w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-amber-500 text-2xl shadow-sm border border-amber-100 group-hover:scale-110 transition-transform">
                         <i className="fa-solid fa-clock-rotate-left"></i>
                     </div>
                 </div>
-                <div className="bg-green-50 border border-green-100 rounded-2xl p-5 flex items-center justify-between">
-                    <div>
-                        <p className="text-[10px] font-bold text-green-500 uppercase tracking-wider mb-1">Total Settled (Lifetime)</p>
-                        <h4 className="text-2xl font-bold text-green-900">₹{totalPaid.toLocaleString()}</h4>
+
+                {/* Settled Payouts Card */}
+                <div className="bg-emerald-50 rounded-[2rem] p-6 md:p-8 border border-emerald-200/60 flex items-center justify-between shadow-sm relative overflow-hidden group">
+                    <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none group-hover:bg-emerald-500/20 transition-colors duration-700"></div>
+                    <div className="relative z-10">
+                        <p className="text-[10px] font-black text-emerald-700/70 uppercase tracking-widest mb-2 flex items-center gap-2">
+                            <i className="fa-solid fa-vault"></i> Lifetime Settled Volume
+                        </p>
+                        <h4 className="text-4xl font-black text-emerald-600 tracking-tighter">₹{totalPaid.toLocaleString()}</h4>
                     </div>
-                    <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-green-500 text-xl shadow-sm">
+                    <div className="relative z-10 w-14 h-14 bg-white rounded-2xl flex items-center justify-center text-emerald-500 text-2xl shadow-sm border border-emerald-100 group-hover:scale-110 transition-transform">
                         <i className="fa-solid fa-check-double"></i>
                     </div>
                 </div>
             </div>
 
-            {/* Data Table */}
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            {/* --- DATA TABLE --- */}
+            <div className="bg-white rounded-[2.5rem] shadow-sm border border-slate-200/60 overflow-hidden animate-fade-in-up" style={{animationDelay: '100ms'}}>
                 <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse">
+                    <table className="w-full text-left border-collapse min-w-[800px]">
                         <thead>
-                            <tr className="bg-slate-50 border-b border-slate-200 text-xs uppercase tracking-wider text-slate-500">
-                                <th className="p-4 font-bold pl-6">Req ID / Date</th>
-                                <th className="p-4 font-bold">Provider Details</th>
-                                <th className="p-4 font-bold">Transfer Info</th>
-                                <th className="p-4 font-bold text-center">Status</th>
-                                <th className="p-4 font-bold text-right pr-6">Action</th>
+                            <tr className="bg-slate-50/80 border-b border-slate-200 text-[10px] font-black uppercase tracking-widest text-slate-400">
+                                <th className="p-5 pl-8">Request Details</th>
+                                <th className="p-5">Provider Identity</th>
+                                <th className="p-5">Transfer Value</th>
+                                <th className="p-5 text-center">Status</th>
+                                <th className="p-5 text-right pr-8">Admin Action</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-100 text-sm">
+                        <tbody className="divide-y divide-slate-100 text-sm font-medium">
                             {loading ? (
                                 <tr>
-                                    <td colSpan="5" className="p-12 text-center">
-                                        <i className="fa-solid fa-circle-notch fa-spin text-3xl text-brand"></i>
+                                    <td colSpan="5" className="p-16 text-center">
+                                        <i className="fa-solid fa-circle-notch fa-spin text-3xl text-slate-300 mb-3"></i>
+                                        <p className="text-slate-500 font-bold">Synchronizing financial ledger...</p>
                                     </td>
                                 </tr>
                             ) : filteredWithdrawals.length === 0 ? (
                                 <tr>
-                                    <td colSpan="5" className="p-12 text-center">
-                                        <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-3 text-slate-300 text-2xl">
-                                            <i className="fa-solid fa-money-bill-wave"></i>
-                                        </div>
-                                        <p className="text-slate-500 font-bold">No payout requests found.</p>
+                                    <td colSpan="5" className="p-16 text-center">
+                                        <div className="w-16 h-16 bg-slate-50 border border-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4 text-slate-300 text-2xl shadow-inner"><i className="fa-solid fa-money-bill-wave"></i></div>
+                                        <p className="text-slate-900 font-bold text-lg">No payout requests found.</p>
+                                        <p className="text-slate-500 font-medium text-sm mt-1">Providers have not requested any new withdrawals.</p>
                                     </td>
                                 </tr>
                             ) : (
                                 filteredWithdrawals.map((withdrawal) => (
-                                    <tr key={withdrawal.id} className="hover:bg-slate-50/50 transition-colors">
+                                    <tr key={withdrawal.id} className={`transition-colors cursor-default ${withdrawal.status === 'completed' ? 'hover:bg-slate-50/50 bg-slate-50/30' : 'hover:bg-slate-50/80 bg-white'}`}>
                                         
                                         {/* Date & ID */}
-                                        <td className="p-4 pl-6">
-                                            <p className="font-bold text-slate-900">#{withdrawal.id}</p>
-                                            <p className="text-xs text-slate-500 font-medium">
+                                        <td className="p-5 pl-8">
+                                            <span className="bg-slate-100 text-slate-600 px-2.5 py-1 rounded-md text-[10px] font-black tracking-wider border border-slate-200 inline-block mb-1.5">
+                                                REQ-#{withdrawal.id}
+                                            </span>
+                                            <p className="text-xs text-slate-500 font-bold flex items-center gap-2">
+                                                <i className="fa-regular fa-calendar text-slate-400"></i>
                                                 {new Date(withdrawal.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                                             </p>
                                         </td>
 
                                         {/* Provider Details */}
-                                        <td className="p-4">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 font-bold shrink-0">
+                                        <td className="p-5">
+                                            <div className="flex items-center gap-4">
+                                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm shrink-0 shadow-sm border ${
+                                                    withdrawal.status === 'completed' ? 'bg-slate-200 text-slate-500 border-slate-300' : 'bg-blue-50 text-blue-600 border-blue-100/50'
+                                                }`}>
                                                     {withdrawal.provider_name.charAt(0)}
                                                 </div>
                                                 <div>
-                                                    <h6 className="font-bold text-slate-900">{withdrawal.provider_name}</h6>
-                                                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">PRO-{withdrawal.provider_id} • {withdrawal.phone}</p>
+                                                    <h6 className={`font-bold text-base tracking-tight ${withdrawal.status === 'completed' ? 'text-slate-600' : 'text-slate-900'}`}>{withdrawal.provider_name}</h6>
+                                                    <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest mt-0.5 flex items-center gap-1.5">
+                                                        <i className="fa-solid fa-phone"></i> {withdrawal.phone}
+                                                    </p>
                                                 </div>
                                             </div>
                                         </td>
 
                                         {/* Amount & Bank Info (Mocked bank for MVP) */}
-                                        <td className="p-4">
-                                            <p className="font-bold text-slate-900 text-lg">₹{parseFloat(withdrawal.amount).toLocaleString()}</p>
-                                            <p className="text-[10px] text-slate-500 font-bold uppercase flex items-center gap-1">
-                                                <i className="fa-solid fa-building-columns"></i> Bank Transfer
+                                        <td className="p-5">
+                                            <h4 className={`font-black text-xl tracking-tighter ${withdrawal.status === 'completed' ? 'text-emerald-600' : 'text-slate-900'}`}>
+                                                ₹{parseFloat(withdrawal.amount).toLocaleString()}
+                                            </h4>
+                                            <p className="text-[10px] text-slate-500 font-black uppercase tracking-widest mt-1 flex items-center gap-1.5">
+                                                <i className="fa-solid fa-building-columns text-slate-400"></i> Primary Bank
                                             </p>
                                         </td>
 
                                         {/* Status */}
-                                        <td className="p-4 text-center">
+                                        <td className="p-5 text-center">
                                             {withdrawal.status === 'completed' ? (
-                                                <span className="bg-green-50 text-green-600 border border-green-100 px-3 py-1 rounded-full text-xs font-bold flex items-center justify-center gap-1 w-fit mx-auto">
-                                                    <i className="fa-solid fa-check"></i> Paid
+                                                <span className="bg-emerald-50 text-emerald-600 border border-emerald-100/50 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-1.5 w-fit mx-auto shadow-sm">
+                                                    <i className="fa-solid fa-check-double"></i> Settled
                                                 </span>
                                             ) : (
-                                                <span className="bg-amber-50 text-amber-600 border border-amber-100 px-3 py-1 rounded-full text-xs font-bold flex items-center justify-center gap-1 w-fit mx-auto animate-pulse">
-                                                    <i className="fa-solid fa-clock"></i> Pending
+                                                <span className="bg-amber-50 text-amber-600 border border-amber-100/50 px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest flex items-center justify-center gap-1.5 w-fit mx-auto shadow-sm">
+                                                    <i className="fa-solid fa-clock animate-pulse"></i> Pending
                                                 </span>
                                             )}
                                         </td>
 
                                         {/* Actions */}
-                                        <td className="p-4 pr-6 text-right">
+                                        <td className="p-5 pr-8 text-right">
                                             {withdrawal.status === 'pending' ? (
                                                 <button 
                                                     onClick={() => handleProcess(withdrawal.id)}
-                                                    className="text-xs font-bold text-white bg-slate-900 hover:bg-black transition-colors px-4 py-2 shadow-sm rounded-lg"
+                                                    className="text-xs font-bold text-white bg-slate-900 hover:bg-brand transition-all px-5 py-3 rounded-xl shadow-lg hover:shadow-brand/30 active:scale-95 flex items-center gap-2 ml-auto"
+                                                    title="Mark funds as transferred"
                                                 >
-                                                    Mark as Paid
+                                                    <i className="fa-solid fa-check"></i> Mark as Paid
                                                 </button>
                                             ) : (
-                                                <span className="text-xs font-bold text-slate-400">
-                                                    Settled
+                                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center justify-end gap-1.5">
+                                                    <i className="fa-solid fa-lock"></i> Locked
                                                 </span>
                                             )}
                                         </td>

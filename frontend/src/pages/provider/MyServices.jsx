@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { API_BASE_URL } from '../../constants/api';
-import Dialog from '../../components/ui/Dialog'; 
+import Dialog from '../../components/ui/Dialog';  
 
 const MyServices = () => {
     const navigate = useNavigate();
@@ -97,7 +97,7 @@ const MyServices = () => {
         if (!window.confirm(`Are you sure you want to remove "${serviceName}" from your catalog?`)) return;
 
         try {
-            const response = await fetch(`${API_BASE_URL}/provider/delete_service.php`, {
+            const response = await fetch(`${API_BASE_URL}provider/delete_service.php`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ service_id: id })
