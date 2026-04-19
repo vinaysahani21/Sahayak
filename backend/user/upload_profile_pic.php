@@ -12,7 +12,7 @@ if (!isset($_POST['id']) || !isset($_FILES['image'])) {
 }
 
 $id = $_POST['id'];
-$target_dir = "../uploads/"; 
+$target_dir = "../uploads/profiles/"; 
 
 // Ensure folder exists
 if (!file_exists($target_dir)) {
@@ -31,7 +31,7 @@ if($check === false) {
 
 if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
     
-    $db_path = "uploads/" . $new_filename; 
+    $db_path = "uploads/profiles/" . $new_filename; 
     
     $sql = "UPDATE tblcustomers SET profile_img=? WHERE id=?";
     $stmt = $conn->prepare($sql);
@@ -43,6 +43,9 @@ if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
         echo json_encode(["status" => "error", "message" => "DB Error"]);
     }
 } else {
-    echo json_encode(["status" => "error", "message" => "Upload Error"]);
+    // 5. CATCH 
+    $error = error_get_last();
+    $errorMessage = $error ? $error['message'] : "Check Ubuntu folder permissions.";
+    echo json_encode(["status" => "error", "message" => "Upload Blocked: " . $errorMessage]);
 }
 ?>
