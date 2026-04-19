@@ -1,92 +1,112 @@
-# Sahaayak: Hyper-Local On-Demand Home Services Platform
+<div align="center">
 
-Sahaayak is a full-stack, hyper-local service marketplace (similar to Urban Company) built to bridge the gap between local service providers and customers. It features a premium "tech-giant" aesthetic, a multi-step partner onboarding process, secure Razorpay payment integration, and a comprehensive dashboard for both providers and customers.
+# 🛡️ Sahaayak
+The Modern Operating System for Local Home Services
 
-# 🚀 Features
+Sahaayak is a hyper-local, on-demand marketplace connecting households with verified service professionals. Engineered for speed, trust, and scale, it features a multi-portal architecture serving Customers, Service Providers, and Platform Administrators.
 
-For Customers:
+</div>
 
-Elite Search: Browse verified professionals with a high-end, filtered search experience.
-Secure Booking: Multi-step checkout with address management and date/time slot selection.
-Live Tracking: Real-time job status tracking via an interactive activity timeline.
-Integrated Payments: Secure checkout using Razorpay with automated platform commission splitting.
+## ✨ Key Features
+### 1. The Admin Command Center
+A "God-Tier" administrative workspace providing absolute control over platform operations.
 
-For Providers:
+- Identity Management: Unified directory to view, filter, and suspend/activate Customer and Provider accounts.
 
-Business Dashboard: Comprehensive overview of revenue, jobs completed, and average ratings.
-Smart Schedule: Daily job management with map integration and "Complete & Bill" workflow.
-Wallet & Payouts: Track earnings, pending settlements, and request bank transfers directly.
-Service Catalog: Manage personal service offerings, pricing, and descriptions.
+- KYC & Verification: Review and approve/revoke provider credentials with a single click.
 
-# 🛠️ Tech Stack
+- Dynamic Service Catalog: Manage platform service categories using a built-in visual FontAwesome icon picker.
 
-Frontend: React.js, Tailwind CSS, Vite, Lucide/FontAwesome Icons.
-Backend: PHP (OOP & Prepared Statements for Security).
-Database: MySQL.
-Payments: Razorpay API Integration.
-Authentication: Custom JWT-like session management with local storage persistence.
+- Master Ledger: Real-time tracking of all platform bookings, statuses, and transaction values.
 
-# 📂 Project Structure
-Plaintext
-Sahaayak-App/
-├── frontend/              # React.js source code (Vite)
-│   ├── src/
-│   │   ├── components/    # Reusable UI components (Dialog, Sidebar, etc.)
-│   │   ├── pages/         # Page components (Customer, Provider, Admin)
-│   │   └── constants/     # API URLs and Status definitions
-│   └── .env               # Frontend environment variables
-├── backend/               # PHP API files
-│   ├── admin/             # Admin management endpoints
-│   ├── user/              # Customer-specific logic (Search, Booking, Razorpay)
-│   ├── provider/          # Provider business logic
-│   ├── connection.php     # MySQL Database connection
-│   └── .env               # Backend sensitive credentials
-└── DB/                    # Database Export
-    └── sahayak.sql        # Database schema and seed data
+- Financial Payouts: Review provider withdrawal requests, track platform commission, and mark bank transfers as settled.
 
-# 🏁 Getting Started
+### 🛠️ 2. The Provider Workspace
+A dedicated SaaS-like dashboard empowering professionals to run their independent businesses.
 
-Follow these steps to set up the project locally on your machine.
+- Service Catalog: Providers can add, price, and manage their specific offerings.
 
-1. Prerequisites
-XAMPP / WAMP installed for PHP and MySQL.
-Node.js (v16+) and npm installed for the React frontend.
-Razorpay Test Keys (Sign up at Razorpay Dashboard).
+- Interactive Schedule: View upcoming appointments, track history, and generate final invoices for customers.
 
-2. Database Setup
-Open phpMyAdmin.
-Create a new database named sahayak.
-Import the DB/sahayak.sql file provided in the repository.
+- Digital Wallet: Track lifetime earnings, view pending clearances, and request bank payouts.
 
-3. Backend Configuration
-Move the backend/ folder to your htdocs directory (e.g., C:\xampp\htdocs\Sahaayak-BE).
-Create a .env file in the root of the backend folder:
+- Actionable Dashboard: Real-time revenue charts, active job requests, and recent customer feedback.
 
-Code snippet
-RAZORPAY_KEY_ID=rzp_test_your_id
-RAZORPAY_KEY_SECRET=your_secret_key
-Ensure connection.php has your correct database credentials (username, password).
+### 👥 3. The Customer Experience
+A frictionless, conversion-optimized interface for booking local help.
 
-4. Frontend Configuration
-Open the frontend/ folder in your terminal.
+- Open Directory: Users can search and browse service categories without hitting a login wall.
 
-Install dependencies:
+- Verified Professionals: Customers see upfront pricing, background-check badges, and real community reviews.
 
+- Instant Booking & Tracking: Streamlined booking flow and a premium timeline to track service status from request to invoice.
+
+## 🏗️ Architecture & Technology Stack
+### Frontend (Client)
+
+- Framework: React.js (Vite)
+
+- Styling: Tailwind CSS (Custom SaaS design system, frosted glass components, responsive off-canvas menus)
+
+- Icons: FontAwesome 6
+
+- Routing: React Router DOM (v6)
+
+### Backend (Server)
+
+- Language: PHP 8+ (RESTful API architecture)
+
+### Database: MySQL
+
+Security: Prepared statements (SQLi prevention), strict CORS headers, role-based access control, and "Soft Delete" data architecture to preserve historical ledgers.
+
+## 🚀 Installation & Local Setup
+### 1. Database Setup
+- Create a new MySQL database named sahaayak.
+
+- Import the provided sahaayak.sql file into your database.
+
+- Update your connection.php file with your local database credentials.
+
+### 2. Backend Setup (Ubuntu/Apache environments)
+- If running on native Ubuntu Apache, ensure the web server has permission to save uploaded files (like profile pictures):
+
+```Bash
+# Navigate to your backend directory
+cd /var/www/html/sahaayak/backend
+
+# Create the uploads directory
+sudo mkdir -p uploads/profiles
+
+# Grant Apache ownership
+sudo chown -R www-data:www-data uploads
+
+# Set permissions
+sudo chmod -R 775 uploads
+```
+### 3. Frontend Setup
+Navigate to the frontend directory, install dependencies, and start the development server.
+
+```Bash
+cd frontend
+
+# Install dependencies
 npm install
-Create a .env file in the frontend/ root:
 
-Code snippet
-VITE_API_BASE_URL=http://localhost/Sahaayak-BE/
-VITE_RAZORPAY_KEY_ID=rzp_test_your_id
-Start the development server:
-
+# Start the Vite dev server
 npm run dev
+```
+### 4. Environment Variables
+- Ensure your src/constants/api.js points to your local PHP server:
 
-# 🛡️ Security Measures
+```JavaScript
+export const API_BASE_URL = "http://localhost/sahaayak/backend"; // Update according to your local path
+```
+## 🔒 Security Notes
+Soft Deletes: Deleting a service or category does not permanently erase it from the database. It toggles an is_active flag to 0, ensuring that historical invoices and booking records never break.
 
-Environment Variables: Sensitive API keys are never hardcoded and are managed via .env.
-SQL Injection Prevention: All PHP endpoints utilize MySQLi prepared statements.
-CORS Protection: Secure headers implemented to control API access.
-Role-Based Access Control (RBAC): Layout wrappers ensure users can only access dashboards corresponding to their role.
+File Uploads: Profile picture uploads use strict MIME-type checking and rename files using dynamic timestamps to prevent overwrites and execution of malicious scripts.
 
-# Developed By Vinay Sahani
+<div align="center">
+<h3>Engineered by <b><i>Vinay Sahani</i></b>.</h3>
+</div>
